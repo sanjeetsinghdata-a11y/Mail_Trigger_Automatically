@@ -19,7 +19,7 @@ else:
 # Create table
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS B_Boys (
-        id INTEGER PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT ,
         name VARCHAR(30),
         DOB DATE,
         Email text
@@ -27,21 +27,6 @@ cursor.execute("""
 """)
 
 
-
-# Insert sample record only if it doesn't already exist
-cursor.execute("""
-    INSERT OR IGNORE INTO B_Boys (id, name, DOB,Email)
-    VALUES (?, ?, ?,?)
-""", (1, "Singh", "2026-11-22"))
-
-
-cursor.execute("""
-               update B_Boys
-               set Email='Sanjeet.singh.data@gmail.com'
-               where id=1
-               """)
-print("table has been updated")
-conn.commit()
 
 print("Table checked and record inserted.")
 

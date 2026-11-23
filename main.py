@@ -27,21 +27,6 @@ class Birthday_mail_trigger:
         self.scheduler = BackgroundScheduler()
 
 
-
-
-    # Add a person
-    def Add_Person(self, name, DOB):
-
-        with sqlite3.connect(self.database) as conn:
-
-            conn.execute("""
-                INSERT INTO B_Boys (name, DOB)
-                VALUES (?, ?)
-            """, (name, DOB))
-
-        print(f"Person added: {name}")
-        print(f"DOB: {DOB}")
-
     # Send birthday email
     def Send_Email(self, name):
 
@@ -53,14 +38,14 @@ class Birthday_mail_trigger:
             
             
         msg.set_content(f"""
-Happy Birthday, {name}! 🎉🎂
+        Happy Birthday, {name}! 🎉🎂
 
-Wishing you {dt.date.today().year}th a wonderful birthday filled with happiness,
-success, good health, and unforgettable memories.
+        Wishing you th a wonderful birthday filled with happiness,
+        success, good health, and unforgettable memories.
 
-Best wishes,
-Siddharth
-""")
+        Best wishes,
+        Siddharth
+        """)
 
         try:
 
@@ -124,8 +109,9 @@ Siddharth
 
         self.scheduler.add_job(
         self.Msg_trigger,
-        trigger="interval",
-        seconds=20,
+         trigger="cron",
+        hour=9,
+        minute=0,
         id="birthday_email_job",
         replace_existing=True
     )
@@ -151,3 +137,6 @@ b = Birthday_mail_trigger()
 
 
 b.Start_Scheduler()
+
+ 
+    
