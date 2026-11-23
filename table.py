@@ -17,18 +17,25 @@ else:
     print("New database created.")
 
 # Create table
-cursor.execute("""
+try:
+    cursor.execute("""
     CREATE TABLE IF NOT EXISTS B_Boys (
-        id INTEGER PRIMARY KEY AUTOINCREMENT ,
-        name VARCHAR(30),
-        DOB DATE,
-        Email text
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        DOB TEXT NOT NULL,
+        Email TEXT NOT NULL
     )
 """)
+    
+    
+    
+    print("table has been established ")
+    conn.commit()
 
+except  sqlite3.Error as e:
+    print(f"{e}")
+    
 
-
-print("Table checked and record inserted.")
 
 # Display records
 cursor.execute("SELECT * FROM B_Boys")
