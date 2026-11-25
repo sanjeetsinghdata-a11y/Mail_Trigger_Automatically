@@ -5,18 +5,19 @@ import time
 import datetime as dt
 import ssl
 import smtplib
-
 from pathlib import Path
 from dotenv import load_dotenv
 from email.message import EmailMessage
 from apscheduler.schedulers.background import BackgroundScheduler
+import sqlite3
+import glob
+
 
 
 class Birthday_mail_trigger:
 
     def __init__(self):
 
-        # Project configuration
         self.base_dir = Path(__file__).resolve().parent
 
         load_dotenv(self.base_dir / ".gitignore")
@@ -34,10 +35,30 @@ class Birthday_mail_trigger:
             )
 
         print("Database:", self.database)
+        print("Database type:", type(self.database))
 
-        # Create email history table automatically
         self.Create_Log_Table()
 
+    ## create table to store all the b boys/girls birthday
+    def Create_Store_table(self):
+        
+        with sqlite3.connect(self.database) as conn:
+            cursor=conn.cursor()            
+            # Create table
+    
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS B_Boys (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                DOB TEXT NOT NULL,
+                Email TEXT NOT NULL
+            )
+        """)
+            conn.commit()
+        print("table created successfully ")
+            
+            
+            
     # Create email history table
     def Create_Log_Table(self):
 
@@ -129,6 +150,27 @@ Siddharth
 
             return cursor.fetchone() is not None
 
+    
+
+    def refresh_data(self):
+
+        with sqlite3.connect(self.database) as conn:
+
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                SELECT id, name, DOB, Email
+                FROM B_Boys
+            """)
+
+            data = cursor.fetchall()
+
+        print(f"Database refreshed: {len(data)} records loaded.")
+
+        return data
+
+ 
+            
     # Save email delivery status
     def Save_Email_Log(self, person_id, today, status):
 
@@ -266,3 +308,5 @@ if __name__ == "__main__":
 
     b = Birthday_mail_trigger()
     b.Start_Scheduler()
+    
+    
